@@ -1,0 +1,14 @@
+character:
+  id: ranger
+  name: "游侠"
+  description: "远程射手，保持距离越远伤害加成越高。"
+  role: ranger
+  base_stats:
+    health: 65
+    attack: 14
+    defense: 5
+    speed: 8
+  starting_gold: 100
+  starting_relic: "eagle_eye"
+  special_mechanic: "distance_bonus"
+  unlock_condition: "soul_shards:300"

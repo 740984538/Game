@@ -1,0 +1,42 @@
+enemies:
+  - id: death_knight
+    name: "死亡骑士"
+    type: elite
+    base_stats:
+      health: 200
+      attack: 20
+      defense: 15
+      speed: 5
+    ai_pattern: "elite_melee"
+    special_skills:
+      - id: "shield_bash"
+        description: "格挡反击，造成双倍伤害"
+        cooldown: 5.0
+      - id: "war_cry"
+        description: "提升周围敌人10%攻击力"
+        cooldown: 8.0
+    drop_table:
+      gold_min: 30
+      gold_max: 60
+      relic_drop_chance: 1.0   # 精英怪必掉遗物
+
+  - id: shadow_mage
+    name: "暗影法师"
+    type: elite
+    base_stats:
+      health: 150
+      attack: 25
+      defense: 8
+      speed: 7
+    ai_pattern: "elite_ranged"
+    special_skills:
+      - id: "dark_bolt"
+        description: "发射追踪暗影弹"
+        cooldown: 3.0
+      - id: "shadow_blink"
+        description: "瞬移到玩家背后"
+        cooldown: 6.0
+    drop_table:
+      gold_min: 30
+      gold_max: 60
+      relic_drop_chance: 1.0

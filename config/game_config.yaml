@@ -1,0 +1,57 @@
+# 游戏核心配置
+display:
+  width: 1280
+  height: 720
+  fps: 60
+  title: "深渊回响：无尽轮回"
+  fullscreen: false
+
+gameplay:
+  floors_per_run: 5          # 每局总层数
+  nodes_per_floor_min: 8
+  nodes_per_floor_max: 12
+  branch_paths_min: 2
+  branch_paths_max: 4
+  min_combat_rooms_to_boss: 3
+
+difficulty_modifiers:
+  0:  # 新手
+    name: "新手"
+    enemy_hp_mult: 1.0
+    enemy_atk_mult: 1.0
+    revive_count: 1
+  1:  # 普通
+    name: "普通"
+    enemy_hp_mult: 1.2
+    enemy_atk_mult: 1.0
+    revive_count: 0
+  2:  # 困难
+    name: "困难"
+    enemy_hp_mult: 1.5
+    enemy_atk_mult: 1.2
+    revive_count: 0
+  3:  # 噩梦
+    name: "噩梦"
+    enemy_hp_mult: 2.0
+    enemy_atk_mult: 1.5
+    revive_count: 0
+  4:  # 地狱
+    name: "地狱"
+    enemy_hp_mult: 3.0
+    enemy_atk_mult: 2.0
+    revive_count: 0
+    time_limit_per_floor: 300
+
+economy:
+  gold_cap_per_run: 9999
+  soul_shards_cap: 999999
+  essence_cap_per_run: 99
+
+audio:
+  bgm_volume: 0.7
+  sfx_volume: 1.0
+
+stats_cap:
+  crit_rate: 0.75
+  dodge_rate: 0.40
+  cooldown_reduction: 0.50

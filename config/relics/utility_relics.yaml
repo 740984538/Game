@@ -1,0 +1,36 @@
+relics:
+  - id: merchants_coin
+    name: "商人金币"
+    rarity: common
+    description: "每层开始时获得25金币"
+    effects:
+      - trigger: "on_floor_start"
+        effect_type: "gain_gold"
+        value: 25
+
+  - id: discount_card
+    name: "折扣卡"
+    rarity: rare
+    description: "商店所有物品价格降低20%"
+    effects:
+      - trigger: "on_shop_open"
+        effect_type: "shop_discount"
+        value: 0.2
+
+  - id: map_compass
+    name: "探险罗盘"
+    rarity: rare
+    description: "每层地图完全可见"
+    effects:
+      - trigger: "on_floor_start"
+        effect_type: "reveal_map"
+        value: 1
+
+  - id: lucky_clover
+    name: "幸运四叶草"
+    rarity: epic
+    description: "遗物选择时额外多一个选项"
+    effects:
+      - trigger: "on_relic_choice"
+        effect_type: "extra_choice"
+        value: 1

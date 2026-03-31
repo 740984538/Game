@@ -1,0 +1,13 @@
+cards:
+  - id: cursed_strength
+    name: "诅咒之力"
+    type: cursed
+    cost: 0
+    description: "攻击力+10，但每层开始失去5点生命值"
+    upgraded_description: "攻击力+15，但每层开始失去5点生命值"
+    effect:
+      attack_bonus: 10
+      on_floor_start_damage: 5
+    upgraded_effect:
+      attack_bonus: 15
+      on_floor_start_damage: 5

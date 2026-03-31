@@ -1,0 +1,14 @@
+character:
+  id: assassin
+  name: "刺客"
+  description: "高爆发连击型刺客，连击数越高伤害越恐怖。"
+  role: assassin
+  base_stats:
+    health: 60
+    attack: 15
+    defense: 4
+    speed: 9
+  starting_gold: 100
+  starting_relic: "shadow_blade"
+  special_mechanic: "combo_system"
+  unlock_condition: "soul_shards:200"

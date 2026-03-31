@@ -1,0 +1,42 @@
+enemies:
+  - id: skeleton_warrior
+    name: "骷髅战士"
+    type: common
+    base_stats:
+      health: 30
+      attack: 8
+      defense: 2
+      speed: 4
+    ai_pattern: "melee_aggressive"
+    drop_table:
+      gold_min: 5
+      gold_max: 12
+      relic_drop_chance: 0.05
+
+  - id: zombie
+    name: "腐烂僵尸"
+    type: common
+    base_stats:
+      health: 50
+      attack: 6
+      defense: 4
+      speed: 2
+    ai_pattern: "melee_slow"
+    drop_table:
+      gold_min: 4
+      gold_max: 10
+      relic_drop_chance: 0.03
+
+  - id: dark_archer
+    name: "暗影弓手"
+    type: common
+    base_stats:
+      health: 25
+      attack: 10
+      defense: 1
+      speed: 6
+    ai_pattern: "ranged_kite"
+    drop_table:
+      gold_min: 6
+      gold_max: 14
+      relic_drop_chance: 0.05

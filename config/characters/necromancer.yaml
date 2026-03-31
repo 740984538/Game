@@ -1,0 +1,14 @@
+character:
+  id: necromancer
+  name: "死灵法师"
+  description: "召唤亡灵军团，以数量压制敌人。"
+  role: summoner
+  base_stats:
+    health: 60
+    attack: 10
+    defense: 4
+    speed: 5
+  starting_gold: 100
+  starting_relic: "book_of_dead"
+  special_mechanic: "summon_system"
+  unlock_condition: "soul_shards:400"

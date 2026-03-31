@@ -1,0 +1,29 @@
+relics:
+  - id: fire_heart
+    name: "火焰之心"
+    rarity: legendary
+    description: "火系伤害+50%"
+    effects:
+      - trigger: "on_deal_damage"
+        effect_type: "damage_bonus"
+        value: 0.5
+        condition: "element == fire"
+
+  - id: shadow_convergence
+    name: "暗影汇聚"
+    rarity: legendary
+    description: "连击数每达到10，触发一次全屏暗影爆炸"
+    effects:
+      - trigger: "on_combo_threshold"
+        effect_type: "aoe_damage"
+        value: 10
+        condition: "combo % 10 == 0"
+
+  - id: time_loop
+    name: "时间回环"
+    rarity: legendary
+    description: "每层结束时，随机重置一个冷却技能"
+    effects:
+      - trigger: "on_floor_end"
+        effect_type: "reset_random_cooldown"
+        value: 1

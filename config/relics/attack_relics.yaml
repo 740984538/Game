@@ -1,0 +1,55 @@
+relics:
+  - id: rusted_shield
+    name: "生锈盾牌"
+    rarity: common
+    description: "格挡时减伤50%"
+    effects:
+      - trigger: "on_block"
+        effect_type: "damage_reduction"
+        value: 0.5
+
+  - id: iron_will
+    name: "钢铁意志"
+    rarity: common
+    description: "生命值上限+20"
+    effects:
+      - trigger: "on_pickup"
+        effect_type: "max_health_bonus"
+        value: 20
+
+  - id: warriors_gauntlet
+    name: "战士护手"
+    rarity: common
+    description: "攻击力+3"
+    effects:
+      - trigger: "on_pickup"
+        effect_type: "attack_bonus"
+        value: 3
+
+  - id: blood_rage
+    name: "血怒"
+    rarity: rare
+    description: "生命值低于30%时攻击力+50%"
+    effects:
+      - trigger: "on_attack"
+        effect_type: "conditional_attack_bonus"
+        value: 0.5
+        condition: "hp_percent < 0.3"
+
+  - id: berserker_heart
+    name: "狂战士之心"
+    rarity: epic
+    description: "每击杀一个敌人，攻击力+2（本局累计）"
+    effects:
+      - trigger: "on_kill"
+        effect_type: "stacking_attack_bonus"
+        value: 2
+
+  - id: death_mark
+    name: "死亡标记"
+    rarity: legendary
+    description: "暴击可秒杀血量低于20%的敌人"
+    effects:
+      - trigger: "on_crit"
+        effect_type: "execute"
+        value: 0.2
