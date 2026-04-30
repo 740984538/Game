@@ -27,6 +27,10 @@ class BaseScene(ABC):
         """离开场景时调用，用于清理资源"""
         pass
 
+    def handle_event(self, event) -> None:
+        """处理 pygame 事件，子类可覆盖"""
+        pass
+
     @abstractmethod
     def update(self, dt: float) -> None:
         """每帧更新逻辑，dt 单位为秒"""

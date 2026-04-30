@@ -18,6 +18,7 @@ class GameState(Enum):
     PAUSE = auto()
     GAME_OVER = auto()
     VICTORY = auto()
+    SETTINGS = auto()
 
 
 class RoomType(Enum):

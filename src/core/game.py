@@ -50,6 +50,7 @@ class Game:
         from src.scenes.pause_scene import PauseScene
         from src.scenes.game_over_scene import GameOverScene
         from src.scenes.victory_scene import VictoryScene
+        from src.scenes.settings_scene import SettingsScene
 
         self.state_machine.register(GameState.MAIN_MENU,         MainMenuScene(self))
         self.state_machine.register(GameState.CHARACTER_SELECT,   CharacterSelectScene(self))
@@ -62,6 +63,7 @@ class Game:
         self.state_machine.register(GameState.PAUSE,              PauseScene(self))
         self.state_machine.register(GameState.GAME_OVER,          GameOverScene(self))
         self.state_machine.register(GameState.VICTORY,            VictoryScene(self))
+        self.state_machine.register(GameState.SETTINGS,           SettingsScene(self))
 
         # 初始状态
         self.state_machine.change(GameState.MAIN_MENU)
@@ -76,6 +78,8 @@ class Game:
             for evt in pygame.event.get():
                 if evt.type == pygame.QUIT:
                     self.running = False
+                else:
+                    self.state_machine.handle_event(evt)
 
             self.state_machine.update(dt)
             self.state_machine.render(self.screen)

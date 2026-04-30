@@ -49,3 +49,8 @@ class StateMachine:
         """每帧渲染当前场景"""
         if self.current_state:
             self.current_state.render(surface)
+
+    def handle_event(self, event) -> None:
+        """将 pygame 事件传递给当前场景"""
+        if self.current_state:
+            self.current_state.handle_event(event)
