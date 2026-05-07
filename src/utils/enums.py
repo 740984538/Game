@@ -19,6 +19,9 @@ class GameState(Enum):
     GAME_OVER = auto()
     VICTORY = auto()
     SETTINGS = auto()
+    # 阶段 9 新增
+    META_UPGRADE = auto()   # 9-4：局外灵魂碎片消费/解锁
+    CODEX = auto()          # 9-10：图鉴（已收集遗物 / 已见卡牌）
 
 
 class RoomType(Enum):
@@ -69,10 +72,57 @@ class DamageType(Enum):
 
 class BuffType(Enum):
     """Buff/Debuff类型"""
-    BURNING = "burning"
-    POISONED = "poisoned"
-    FROZEN = "frozen"
-    STUNNED = "stunned"
-    STEALTH = "stealth"
-    BLOCKING = "blocking"
-    BERSERKING = "berserking"
+    # 增益
+    STRENGTH = "strength"          # 力量: 攻击伤害 +N
+    BERSERKING = "berserking"      # 狂暴: 攻击力提升
+    BLOCKING = "blocking"          # 格挡
+    REGENERATION = "regeneration"  # 再生: 每回合恢复HP
+    STEALTH = "stealth"            # 隐身
+    # 减益
+    WEAKENED = "weakened"           # 虚弱: 攻击伤害 ×0.75
+    VULNERABLE = "vulnerable"      # 易伤: 受到伤害 ×1.5
+    POISONED = "poisoned"          # 中毒: 每回合受到等于层数的伤害
+    BURNING = "burning"            # 燃烧: 每回合受到固定伤害
+    FROZEN = "frozen"              # 冰冻
+    STUNNED = "stunned"            # 眩晕
+
+
+class TargetType(Enum):
+    """卡牌目标类型"""
+    SINGLE_ENEMY = "single_enemy"   # 单个敌人
+    ALL_ENEMIES = "all_enemies"     # 所有敌人
+    SELF = "self"                   # 自身
+    NONE = "none"                   # 无目标
+
+
+class RelicTrigger(Enum):
+    """
+    遗物效果触发时机（对应开发计划 8-4）。
+
+    所有事件名与 EventManager.publish 的事件名保持一致，
+    遗物效果通过 RelicManager 在对应事件发生时被自动应用。
+    """
+    # 拾取 / 局开始
+    ON_PICKUP = "on_pickup"                  # 拾取遗物时（用于 max_health_bonus 等被动加成）
+    ON_BATTLE_START = "on_battle_start"      # 战斗开始
+    ON_FLOOR_START = "on_floor_start"        # 进入新楼层
+
+    # 回合
+    ON_TURN_START = "on_player_turn_start"   # 玩家回合开始
+    ON_TURN_END = "on_player_turn_end"       # 玩家回合结束
+
+    # 战斗内
+    ON_ATTACK = "on_attack"                  # 玩家发起攻击时
+    ON_DEAL_DAMAGE = "on_deal_damage"        # 造成伤害时
+    ON_DAMAGED = "on_damaged"                # 受到伤害时
+    ON_BLOCK = "on_block"                    # 格挡触发时
+    ON_CRIT = "on_crit"                      # 暴击触发时
+    ON_KILL = "on_kill"                      # 击杀敌人时
+    ON_DEATH = "on_death"                    # 玩家死亡时
+
+    # 战斗结束 / 经济
+    ON_BATTLE_WIN = "on_battle_win"          # 战斗胜利
+    ON_FLOOR_END = "on_floor_end"            # 完成当前楼层
+    ON_SHOP_OPEN = "on_shop_open"            # 进入商店
+    ON_RELIC_CHOICE = "on_relic_choice"      # 即将展示遗物选择时
+    ON_COMBO_THRESHOLD = "on_combo_threshold"  # 连击阈值达成（传说遗物使用）

@@ -1,0 +1,18 @@
+floor:
+  number: 3
+  theme: "深渊矿坑"
+  visual_style: "幽闭、晶矿"
+  bgm: "bgm_floor3.ogg"
+  nodes_min: 10
+  nodes_max: 12
+  room_weights:
+    combat: 40
+    elite: 20
+    shop: 15
+    event: 15
+    rest: 10
+  boss_id: "bone_king"
+  enemy_pool:
+    - skeleton_warrior
+    - zombie
+    - dark_archer

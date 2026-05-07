@@ -51,13 +51,18 @@ class MainMenuScene(BaseScene):
         self._exit_dialog: Dialog | None = None
         self._bg_surface = None
         self._built = False
+        # 阶段 9-2：根据是否存在当局存档动态启用/禁用「继续游戏」
+        self._continue_btn: Button | None = None
+        # 阶段 9-3：显示元进度灵魂碎片
+        self._shards_label: Label | None = None
 
-    # ── 场景生命周期 ──────────────────────────────────
+    # ── 场景生命周期 ────────────────────────────────────
 
     def enter(self, **kwargs) -> None:
         if not self._built:
             self._build_ui()
             self._built = True
+        self._refresh_dynamic()
         logger.info("进入主菜单")
 
     def exit(self) -> None:
@@ -119,10 +124,12 @@ class MainMenuScene(BaseScene):
         self._widgets.append(divider)
 
         # ── 按钮列表 ──────────────────────────────────
-        btn_start_y = 260
+        btn_start_y = 240
         buttons_config = [
+            ("继续游戏",   self._on_continue),
             ("开始游戏",   self._on_start_game),
             ("每日挑战",   self._on_daily_challenge),
+            ("灵魂祭坛",   self._on_meta_upgrade),
             ("图鉴",       self._on_codex),
             ("设置",       self._on_settings),
             ("退出游戏",   self._on_quit),
@@ -134,21 +141,33 @@ class MainMenuScene(BaseScene):
             btn = Button(
                 btn_x, btn_y, _BTN_W, _BTN_H,
                 text=text,
-                font_size=FONT_SIZE_H3 if i == 0 else FONT_SIZE_BODY,
+                font_size=FONT_SIZE_H3 if text == "继续游戏" else FONT_SIZE_BODY,
                 on_click=cb,
             )
             self._widgets.append(btn)
+            if text == "继续游戏":
+                self._continue_btn = btn
 
         # ── 版本号 ────────────────────────────────────
         version_label = Label(
             SCREEN_WIDTH - 160, SCREEN_HEIGHT - 32,
             150, 24,
-            text="v0.2.0-alpha",
+            text="v0.3.0-alpha",
             font_size=14,
             color=(80, 80, 100),
             align="right",
         )
         self._widgets.append(version_label)
+
+        # ── 灵魂碎片显示（左下角） ────────────────────
+        self._shards_label = Label(
+            16, SCREEN_HEIGHT - 32, 320, 24,
+            text="灵魂碎片：0",
+            font_size=14,
+            color=COLOR_GOLD,
+            align="left",
+        )
+        self._widgets.append(self._shards_label)
 
         # ── 退出确认对话框 ────────────────────────────
         self._exit_dialog = Dialog(
@@ -163,17 +182,69 @@ class MainMenuScene(BaseScene):
 
     # ── 按钮回调 ──────────────────────────────────────
 
+    def _refresh_dynamic(self) -> None:
+        """每次进入主菜单时刷新动态状态：是否能继续、灵魂碎片数"""
+        # 继续游戏按钮
+        if self._continue_btn is not None:
+            try:
+                has_save = self.game.save_manager.has_run_state()
+            except Exception:
+                has_save = False
+            self._continue_btn.enabled = has_save
+        # 灵魂碎片
+        if self._shards_label is not None:
+            try:
+                meta = self.game.save_manager.load_meta_progress()
+                self._shards_label.text = f"灵魂碎片：{meta.soul_shards}"
+            except Exception:
+                pass
+
+    def _on_continue(self) -> None:
+        """阶段 9-2：继续上一局"""
+        sm = getattr(self.game, "save_manager", None)
+        if sm is None or not sm.has_run_state():
+            logger.info("点击：继续游戏（没有可用存档）")
+            return
+        run_model = sm.load_run_state()
+        if run_model is None:
+            return
+        self.game.run_state.restore_from_run_state_model(run_model)
+        logger.info(
+            "继续上一局：char=%s floor=%d",
+            self.game.run_state.character_id,
+            self.game.run_state.current_floor,
+        )
+        self.game.state_machine.change(
+            GameState.MAP_NAVIGATION,
+            character_id=self.game.run_state.character_id,
+            daily=self.game.run_state.daily,
+            floor_number=self.game.run_state.current_floor,
+        )
+
     def _on_start_game(self) -> None:
         logger.info("点击：开始游戏")
+        # 开新局应清掉旧存档（若存在）
+        try:
+            self.game.save_manager.delete_run_state()
+        except Exception:
+            pass
         self.game.state_machine.change(GameState.CHARACTER_SELECT)
 
     def _on_daily_challenge(self) -> None:
         logger.info("点击：每日挑战")
+        try:
+            self.game.save_manager.delete_run_state()
+        except Exception:
+            pass
         self.game.state_machine.change(GameState.CHARACTER_SELECT, daily=True)
 
+    def _on_meta_upgrade(self) -> None:
+        logger.info("点击：灵魂祭坛 / 局外强化")
+        self.game.state_machine.change(GameState.META_UPGRADE)
+
     def _on_codex(self) -> None:
-        logger.info("点击：图鉴（暂未实现，占位）")
-        # TODO: 切换到图鉴场景（阶段9-10实现）
+        logger.info("点击：图鉴")
+        self.game.state_machine.change(GameState.CODEX)
 
     def _on_settings(self) -> None:
         logger.info("点击：设置")

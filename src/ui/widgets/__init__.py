@@ -6,6 +6,8 @@ from src.ui.widgets.panel import Panel
 from src.ui.widgets.scroll_bar import ScrollBar
 from src.ui.widgets.slider import Slider
 from src.ui.widgets.dialog import Dialog
+from src.ui.widgets.character_card import CharacterCard
+from src.ui.widgets.card_widget import CardWidget
 
 __all__ = [
     "UIComponent",
@@ -15,4 +17,6 @@ __all__ = [
     "ScrollBar",
     "Slider",
     "Dialog",
+    "CharacterCard",
+    "CardWidget",
 ]

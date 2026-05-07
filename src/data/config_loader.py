@@ -70,16 +70,42 @@ class ConfigLoader:
         return self._cache["characters"]
 
     def load_all_enemies(self) -> Dict[str, dict]:
-        """加载所有敌人配置"""
+        """
+        加载所有敌人配置，返回 {enemy_id: config} 字典。
+        对应开发计划 6-13: 敌人配置读取
+        """
         if "enemies" not in self._cache:
             enemies: Dict[str, dict] = {}
             enemy_dir = self.config_path / "enemies"
-            for file in enemy_dir.glob("*.yaml"):
-                data = self._load_yaml(file)
-                for enemy in data.get("enemies", data.get("bosses", [])):
-                    enemies[enemy["id"]] = enemy
+            if enemy_dir.exists():
+                for file in enemy_dir.glob("*.yaml"):
+                    data = self._load_yaml(file)
+                    # 支持 enemies 和 bosses 两种顶级 key
+                    for enemy in data.get("enemies", []):
+                        enemies[enemy["id"]] = enemy
+                    for boss in data.get("bosses", []):
+                        # BOSS 配置补充 type 和 base_stats
+                        if "type" not in boss:
+                            boss["type"] = "boss"
+                        if "base_stats" not in boss:
+                            # 从 phases 推断基础属性
+                            boss["base_stats"] = {
+                                "health": 500,
+                                "attack": 20,
+                                "defense": 10,
+                                "speed": 5,
+                            }
+                        enemies[boss["id"]] = boss
             self._cache["enemies"] = enemies
         return self._cache["enemies"]
+
+    def load_enemies_by_type(self, enemy_type: str) -> Dict[str, dict]:
+        """按类型加载敌人 (common/elite/boss)"""
+        all_enemies = self.load_all_enemies()
+        return {
+            eid: cfg for eid, cfg in all_enemies.items()
+            if cfg.get("type") == enemy_type
+        }
 
     def load_floor_config(self, floor_number: int) -> dict:
         """加载楼层配置"""
@@ -88,6 +114,30 @@ class ConfigLoader:
             path = self.config_path / "levels" / f"floor_{floor_number}.yaml"
             self._cache[key] = self._load_yaml(path)["floor"]
         return self._cache[key]
+
+    def load_all_cards(self) -> Dict[str, dict]:
+        """
+        加载所有卡牌配置，返回 {card_id: config} 字典。
+        对应开发计划 6-2: 卡牌配置读取
+        """
+        if "cards" not in self._cache:
+            cards: Dict[str, dict] = {}
+            card_dir = self.config_path / "cards"
+            if card_dir.exists():
+                for file in card_dir.glob("*.yaml"):
+                    data = self._load_yaml(file)
+                    for card in data.get("cards", []):
+                        cards[card["id"]] = card
+            self._cache["cards"] = cards
+        return self._cache["cards"]
+
+    def load_cards_by_type(self, card_type: str) -> Dict[str, dict]:
+        """按类型加载卡牌 (attack/skill/ability/cursed)"""
+        all_cards = self.load_all_cards()
+        return {
+            cid: cfg for cid, cfg in all_cards.items()
+            if cfg.get("type") == card_type
+        }
 
     def load_events(self) -> list:
         """加载所有随机事件"""

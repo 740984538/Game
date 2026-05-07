@@ -257,7 +257,11 @@ class SettingsScene(BaseScene):
 
     def _on_music_volume(self, value: float) -> None:
         self._settings["music_volume"] = round(value, 2)
-        if _pygame_available:
+        # 实时反馈
+        audio = getattr(self.game, "audio", None)
+        if audio is not None:
+            audio.set_music_volume(value)
+        elif _pygame_available:
             try:
                 pygame.mixer.music.set_volume(value)
             except Exception:
@@ -265,6 +269,9 @@ class SettingsScene(BaseScene):
 
     def _on_sound_volume(self, value: float) -> None:
         self._settings["sound_volume"] = round(value, 2)
+        audio = getattr(self.game, "audio", None)
+        if audio is not None:
+            audio.set_sfx_volume(value)
 
     def _on_res_prev(self) -> None:
         idx = self._settings["resolution_idx"]

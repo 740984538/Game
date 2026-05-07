@@ -1,0 +1,18 @@
+floor:
+  number: 2
+  theme: "腐化森林"
+  visual_style: "扭曲、瘴气"
+  bgm: "bgm_floor2.ogg"
+  nodes_min: 9
+  nodes_max: 11
+  room_weights:
+    combat: 45
+    elite: 15
+    shop: 15
+    event: 15
+    rest: 10
+  boss_id: "bone_king"
+  enemy_pool:
+    - skeleton_warrior
+    - zombie
+    - dark_archer

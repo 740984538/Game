@@ -8,7 +8,8 @@ setup(
     python_requires=">=3.11",
     install_requires=[
         "pygame>=2.5.0",
-        "esper>=3.0",
+        # 项目使用 esper 2.x 的 World/Processor API，不兼容 esper 3.x
+        "esper>=2.5,<3.0",
         "PyYAML>=6.0",
         "numpy>=1.24.0",
     ],

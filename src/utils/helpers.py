@@ -55,6 +55,61 @@ def calculate_damage(base: int, attack: int, defense: int,
     return raw
 
 
+def calculate_card_damage(base_damage: int, strength: int = 0,
+                          is_weak: bool = False, is_vulnerable: bool = False,
+                          crit_rate: float = 0.0, crit_mult: float = 1.5,
+                          dodge_rate: float = 0.0) -> dict:
+    """
+    完整卡牌伤害计算 (对应开发计划 6-12)。
+
+    流程:
+      1. 基础伤害 + 力量加成
+      2. 虚弱减伤 (×0.75)
+      3. 闪避检查
+      4. 暴击检查 (×暴击倍率)
+      5. 易伤增伤 (×1.5)
+
+    返回:
+      {
+        "damage": int,       最终伤害
+        "is_crit": bool,     是否暴击
+        "is_dodged": bool,   是否被闪避
+      }
+    """
+    damage = base_damage + strength
+
+    # 虚弱
+    if is_weak:
+        damage = int(damage * 0.75)
+
+    # 闪避
+    if random.random() < dodge_rate:
+        return {"damage": 0, "is_crit": False, "is_dodged": True}
+
+    # 暴击
+    is_crit = False
+    if random.random() < crit_rate:
+        damage = int(damage * crit_mult)
+        is_crit = True
+
+    # 易伤
+    if is_vulnerable:
+        damage = int(damage * 1.5)
+
+    return {"damage": max(0, damage), "is_crit": is_crit, "is_dodged": False}
+
+
+def apply_block(damage: int, block: int) -> tuple:
+    """
+    格挡吸收伤害 (6-12)。
+    返回 (穿透伤害, 剩余格挡)
+    """
+    absorbed = min(damage, block)
+    remaining_damage = damage - absorbed
+    remaining_block = block - absorbed
+    return remaining_damage, remaining_block
+
+
 def format_number(n: int) -> str:
     """将大数字格式化为可读字符串，如 1234 → '1,234'"""
     return f"{n:,}"

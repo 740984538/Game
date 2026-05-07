@@ -8,9 +8,6 @@ from typing import List, Tuple
 from src.utils.enums import RoomType
 
 
-@dataclass_placeholder = None  # 占位，避免循环引用
-
-
 class DungeonGenerator:
     """
     生成单个房间内部的实体布局。
