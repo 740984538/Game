@@ -1,0 +1,54 @@
+[
+  {
+    "id": "misty_cliff",
+    "title": "雾崖吐纳",
+    "text": "你在雾崖听见风过石窍，气机随之圆转。",
+    "weight": 28,
+    "qi": 18,
+    "insight": 1,
+    "tone": "good"
+  },
+  {
+    "id": "old_market",
+    "title": "坊市小赚",
+    "text": "你帮散修鉴别灵草，换来几枚灵石。",
+    "weight": 18,
+    "spiritStones": 6,
+    "tone": "good"
+  },
+  {
+    "id": "demon_wind",
+    "title": "妖风惊梦",
+    "text": "夜半妖风掠过洞府，护阵微裂，你耗费心神才稳住气息。",
+    "weight": 14,
+    "hp": -9,
+    "qi": 8,
+    "tone": "warn"
+  },
+  {
+    "id": "quiet_day",
+    "title": "闭门清修",
+    "text": "这一日无风无雨，丹田里的灵气缓慢沉淀。",
+    "weight": 34,
+    "qi": 12,
+    "tone": "info"
+  },
+  {
+    "id": "ancient_slip",
+    "title": "残简悟道",
+    "text": "你在旧书摊翻到半页残简，虽字迹漫漶，却暗合经脉之理。",
+    "weight": 8,
+    "insight": 4,
+    "qi": 10,
+    "tone": "good"
+  },
+  {
+    "id": "qi_deviation",
+    "title": "行气岔路",
+    "text": "急于求成使灵气逆冲经脉，所幸及时收功。",
+    "weight": 6,
+    "hp": -16,
+    "qi": -10,
+    "tone": "bad"
+  }
+]

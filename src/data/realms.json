@@ -1,0 +1,50 @@
+[
+  {
+    "id": "qi_1",
+    "name": "炼气一层",
+    "stage": 1,
+    "requiredQi": 60,
+    "successRate": 0.88,
+    "lifeSpan": 100
+  },
+  {
+    "id": "qi_2",
+    "name": "炼气二层",
+    "stage": 2,
+    "requiredQi": 145,
+    "successRate": 0.74,
+    "lifeSpan": 105
+  },
+  {
+    "id": "qi_3",
+    "name": "炼气三层",
+    "stage": 3,
+    "requiredQi": 260,
+    "successRate": 0.62,
+    "lifeSpan": 110
+  },
+  {
+    "id": "foundation_1",
+    "name": "筑基初期",
+    "stage": 4,
+    "requiredQi": 480,
+    "successRate": 0.48,
+    "lifeSpan": 160
+  },
+  {
+    "id": "foundation_2",
+    "name": "筑基中期",
+    "stage": 5,
+    "requiredQi": 820,
+    "successRate": 0.38,
+    "lifeSpan": 180
+  },
+  {
+    "id": "golden_core",
+    "name": "金丹初成",
+    "stage": 6,
+    "requiredQi": 1380,
+    "successRate": 0.28,
+    "lifeSpan": 300
+  }
+]

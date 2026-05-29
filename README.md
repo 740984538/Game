@@ -1,346 +1,73 @@
-# 深渊回响：无尽轮回
+# React + TypeScript + Vite
 
-一款基于 Python + Pygame 开发的单机 Roguelike ARPG 游戏。每局随机地图、随机遗物、随机事件，通过构建独特的 Build 流派击败深渊中的 BOSS。
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
----
+Currently, two official plugins are available:
 
-## 目录
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-- [环境要求](#环境要求)
-- [安装与运行](#安装与运行)
-- [游戏基础操作](#游戏基础操作)
-- [游戏流程](#游戏流程)
-- [角色介绍](#角色介绍)
-- [核心系统](#核心系统)
-  - [遗物系统](#遗物系统)
-  - [卡牌系统](#卡牌系统)
-  - [地图系统](#地图系统)
-  - [经济系统](#经济系统)
-- [难度说明](#难度说明)
-- [特色模式](#特色模式)
-- [配置与自定义](#配置与自定义)
-- [开发者指南](#开发者指南)
+## React Compiler
 
----
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## 环境要求
+## Expanding the ESLint configuration
 
-| 项目 | 要求 |
-|------|------|
-| Python | 3.11+ |
-| 操作系统 | Windows / macOS / Linux |
-| 内存 | 512 MB 以上 |
-| 显示 | 1280×720 或更高分辨率 |
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
----
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-## 安装与运行
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-### 方式一：直接运行（推荐）
-
-```bash
-# 克隆项目
-git clone <repo-url>
-cd Game
-
-# 安装依赖
-pip install -r requirements.txt
-
-# 启动游戏
-python main.py
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-### 方式二：pip 安装后运行
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```bash
-pip install -e .
-roguelike
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-### 方式三：安装含开发工具的完整依赖
-
-```bash
-pip install -e ".[dev,optional]"
-```
-
-> `optional` 包含 `loguru`（结构化日志）和 `Cython`（性能优化），非必须。
-
----
-
-## 游戏基础操作
-
-| 按键 | 功能 |
-|------|------|
-| `W` / `A` / `S` / `D` 或方向键 | 移动 |
-| 鼠标左键 | 普通攻击 |
-| `1` ~ `5` | 使用卡牌槽位 |
-| `E` | 交互（拾取/对话） |
-| `Esc` | 暂停菜单 |
-| `M` | 查看地图 |
-| `Tab` | 查看 Build 信息（遗物/卡牌列表） |
-
-> 按键映射可在设置中修改，修改后自动保存。
-
----
-
-## 游戏流程
-
-```
-主菜单
-  └─ 选择角色（已解锁角色）
-       └─ 设置难度 / 种子模式
-            └─ 生成随机地图（5 层）
-                 └─ 选择路径节点（战斗 / 商店 / 事件 / 精英 / 休息）
-                      └─ 完成房间 → 获得奖励（金币 / 遗物 / 卡牌）
-                           └─ 重复直到第 5 层
-                                └─ 击败最终 BOSS
-                                     └─ 结算 → 获得灵魂碎片 → 解锁新内容
-```
-
-每局时长约 **30–60 分钟**。死亡或通关后当局存档自动删除（Roguelike 核心设计），元进度（灵魂碎片/解锁内容）跨局永久保留。
-
-### 房间类型说明
-
-| 房间类型 | 说明 |
-|----------|------|
-| 战斗 | 击败所有敌人后获得金币，有概率掉落遗物 |
-| 精英 | 强力敌人，100% 掉落遗物 |
-| 商店 | 使用金币购买遗物或卡牌 |
-| 随机事件 | 带选项的随机情境，提供权衡选择 |
-| 休息点 | 恢复 HP，或消耗 HP 升级手中的卡牌 |
-| BOSS | 每层末尾，3 阶段机制，掉落大量奖励 |
-
----
-
-## 角色介绍
-
-| 角色 | 初始 HP | 核心机制 | 起始遗物 | 解锁条件 |
-|------|---------|----------|----------|----------|
-| **骑士** | 80 | 格挡系统：格挡后反击造成额外伤害 | 生锈盾牌 | 默认可用 |
-| **刺客** | 60 | 连击系统：连击数越高伤害越高 | 暗影之刃 | 200 灵魂碎片 |
-| **法师** | 55 | 元素融合：不同元素技能联动触发额外效果 | 元素法典 | 200 灵魂碎片 |
-| **游侠** | 65 | 距离加成：与敌人距离越远攻击伤害越高 | 鹰眼 | 300 灵魂碎片 |
-| **死灵法师** | 60 | 召唤系统：指挥亡灵军团作战 | 亡者之书 | 400 灵魂碎片 |
-
-灵魂碎片通过通关、完成成就等方式获得，在主菜单「解锁」界面消费。
-
----
-
-## 核心系统
-
-### 遗物系统
-
-遗物是 Build 构筑的核心，通过不同遗物组合形成流派。来源包括：战斗掉落、精英必掉、BOSS 奖励（3 选 1）、商店购买、随机事件。
-
-**稀有度**
-
-| 稀有度 | 出现概率 | 特点 |
-|--------|----------|------|
-| 普通（白） | 60% | 稳定的基础加成 |
-| 稀有（蓝） | 30% | 较强加成或小触发效果 |
-| 史诗（紫） | 9% | 强力效果或被动 |
-| 传说（金） | 1% | 改变核心玩法机制 |
-
-**遗物分类举例**
-
-- **攻击型**：钢铁意志（+20 HP）、血怒（低血时攻击 +50%）、死亡标记（暴击可秒杀低血量敌人）
-- **防御型**：荆棘铠甲（反弹 10% 受到伤害）、吸血戒指（普攻吸血 15%）、凤凰之羽（死亡时满血复活一次）
-- **功能型**：商人金币（每层开始 +25 金币）、折扣卡（商店价格降低 20%）、探险罗盘（地图全部揭示）
-- **诅咒型**：玻璃大炮（攻击力翻倍，防御归零）、诅咒之刃（攻击 +30%，受伤时减少最大生命上限）
-- **传说型**：暗影汇聚（每 10 连击触发全屏暗影爆炸）、时间回环（每层结束重置随机技能冷却）
-
-### 卡牌系统
-
-卡牌消耗能量使用，每回合初始能量为 3 点。
-
-| 类型 | 效果 | 示例 |
-|------|------|------|
-| 攻击卡 | 直接造成伤害 | 斩击（费 1，10 伤）、火球（费 2，20 火焰+燃烧）、箭雨（费 2，AOE 各 8 伤） |
-| 技能卡 | 移动/控制/召唤 | 冲刺（费 1，短暂无敌位移）、隐身（费 2，隐身 2 秒+下次必暴击） |
-| 能力卡 | 永久被动加成 | 活力（永久 +15 最大 HP）、力量涌动（永久 +3 攻击力） |
-| 诅咒卡 | 高收益伴随代价 | 诅咒之力（攻击 +10，但每层开始扣 5 HP） |
-
-在休息点可选择**升级**一张卡牌（增强效果或降低费用）。
-
-### 地图系统
-
-每局地图由程序化算法生成，共 5 层，每层 8–12 个节点，分 2–4 条路径可选。
-
-- **相同种子**必定生成相同地图，保证复现性
-- 每层到达 BOSS 前至少需经过 **3 个战斗房间**
-- 地图节点在首次选择路径后才会揭示后续节点（除非携带探险罗盘遗物）
-
-**层级主题**
-
-| 层 | 主题 | BOSS |
-|----|------|------|
-| 1 | 废弃村庄 | 骸骨之王（3 阶段） |
-| 2–4 | 深渊腹地 | 精英 BOSS |
-| 5 | 虚空核心 | 虚空霸主（3 阶段，最终关） |
-
-### 经济系统
-
-| 货币 | 获取方式 | 用途 | 上限 |
-|------|----------|------|------|
-| 金币 | 战斗掉落、事件奖励 | 商店购买遗物/卡牌 | 单局 9999 |
-| 精华 | BOSS 掉落 | 高级商店、特殊事件 | 单局 99 |
-| 灵魂碎片 | 通关、成就 | 解锁新角色/内容 | 跨局累积 |
-
----
-
-## 难度说明
-
-| 难度 | 敌人 HP 倍率 | 攻击倍率 | 特殊规则 |
-|------|------------|----------|----------|
-| 新手 | 1.0× | 1.0× | 死亡可复活 1 次 |
-| 普通 | 1.2× | 1.0× | 标准规则 |
-| 困难 | 1.5× | 1.2× | 精英怪出现频率更高 |
-| 噩梦 | 2.0× | 1.5× | BOSS 拥有额外技能 |
-| 地狱 | 3.0× | 2.0× | 每层限时 300 秒 |
-
-> 普通难度及以上死亡后**不可**复活，当局存档会被删除。
-
----
-
-## 特色模式
-
-### 每日挑战
-
-主菜单选择「每日挑战」，全球玩家使用相同种子（基于当天日期生成），完成后可查看排行榜。每日挑战固定为**普通难度**，不可自定义。
-
-### 自定义种子
-
-选择角色后，在出发界面输入任意数字作为种子，可复现特定地图布局。适合与好友分享挑战或研究最优路线。
-
----
-
-## 配置与自定义
-
-所有游戏数据均以 YAML 文件存储在 `config/` 目录下，可直接编辑，无需修改代码。
-
-```
-config/
-├── game_config.yaml        # 全局设置（分辨率、帧率、难度倍率、经济上限）
-├── characters/             # 角色属性和技能配置
-├── cards/                  # 卡牌数据（攻击/技能/能力/诅咒）
-├── relics/                 # 遗物数据（5 类）
-├── enemies/                # 敌人属性和 AI 行为
-├── levels/                 # 楼层房间权重
-└── events/                 # 随机事件文本和选项
-```
-
-**常用修改示例**
-
-修改窗口分辨率（`config/game_config.yaml`）：
-```yaml
-display:
-  width: 1920
-  height: 1080
-```
-
-修改音量（`config/game_config.yaml`）：
-```yaml
-audio:
-  bgm_volume: 0.5   # 背景音乐音量，范围 0.0 ~ 1.0
-  sfx_volume: 0.8   # 音效音量，范围 0.0 ~ 1.0
-```
-
----
-
-## 开发者指南
-
-### 项目结构
-
-```
-Game/
-├── main.py                  # 游戏入口
-├── config/                  # 策划数据表（YAML）
-├── src/
-│   ├── core/                # 核心框架（游戏主循环、状态机、事件总线、资源管理）
-│   ├── ecs/                 # ECS 架构（组件、实体工厂、处理器注册）
-│   ├── systems/             # 11 个游戏系统（输入/AI/移动/战斗/渲染/UI 等）
-│   ├── generation/          # 程序化生成（种子、地图、地牢、战利品）
-│   ├── scenes/              # 11 个游戏场景（菜单/战斗/商店/事件等）
-│   ├── entities/            # 角色属性计算、Build 管理、遗物管理
-│   ├── data/                # 存档管理（pickle + SQLite）
-│   └── utils/               # 常量、枚举、工具函数、日志
-├── assets/                  # 美术资源（图片/音频/字体）
-├── tests/                   # 单元测试
-└── docs/
-    └── architecture.md      # 架构设计详细说明
-```
-
-### 运行测试
-
-```bash
-# 运行全部测试
-pytest tests/
-
-# 带覆盖率报告
-pytest tests/ --cov=src --cov-report=term-missing
-
-# 运行单个测试模块
-pytest tests/test_combat_system.py
-```
-
-### 代码规范
-
-```bash
-# 格式化代码
-black src/ tests/
-
-# 类型检查
-mypy src/
-```
-
-### 打包发布
-
-```bash
-# 使用 PyInstaller 打包为可执行文件
-pip install pyinstaller
-pyinstaller --onefile --windowed main.py --name "深渊回响"
-```
-
-打包产物位于 `dist/` 目录。
-
-### 扩展内容
-
-- **新增角色**：在 `config/characters/` 新建 YAML 文件，参照 `knight.yaml` 格式填写属性和技能
-- **新增遗物**：在 `config/relics/` 对应类型文件中追加条目，然后在 `src/systems/relic_system.py` 实现触发效果
-- **新增关卡**：在 `config/levels/` 新建 `floor_N.yaml`，配置房间权重和 BOSS 信息
-- **新增事件**：在 `config/events/random_events.yaml` 追加事件条目（文本 + 选项 + 效果）
-
-详细架构说明请参阅 [docs/architecture.md](docs/architecture.md)。
-
----
-
-## 存档位置
-
-| 平台 | 路径 |
-|------|------|
-| Windows | `<项目目录>/saves/` |
-| macOS / Linux | `<项目目录>/saves/` |
-
-存档使用 SQLite 格式（`.db` 文件），包含：
-- `meta_progress`：跨局元进度（灵魂碎片、解锁内容、成就）
-- `run_saves`：当局进度（仅普通难度及以下可保存）
-- `settings`：音量、按键映射等个人设置
-
----
-
-## 常见问题
-
-**Q：启动时提示 `ModuleNotFoundError`**
-> 确认已在项目根目录执行 `pip install -r requirements.txt`，并使用 Python 3.11+。
-
-**Q：游戏窗口无法全屏**
-> 修改 `config/game_config.yaml` 中的 `fullscreen: true`，或调整分辨率至显示器原生分辨率。
-
-**Q：存档丢失**
-> 死亡或通关后当局存档会自动删除，这是 Roguelike 的核心设计。元进度（灵魂碎片等）不受影响。
-
-**Q：如何重置所有进度**
-> 删除 `saves/` 目录下的 `.db` 文件即可。
-
-**Q：日志文件在哪里**
-> 位于 `logs/` 目录，自动轮转，保留最近 7 天。
